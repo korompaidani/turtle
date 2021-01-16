@@ -7,9 +7,9 @@ using System.Text;
 
 namespace turtle
 {
-    static class InputFileProcessor
+    public class InputFileProcessor
     {
-        private const string textFile = @".\..\..\..\Input\input.txt";
+        private readonly string textFile = @".\..\..\..\Input\input.txt";
         private const int fieldSizeLinePosition = 0;
         private const int mineCoordinatesLinePosition = 1;
         private const int exitCoordinatesLinePosition = 2;
@@ -17,22 +17,30 @@ namespace turtle
         private const int gameSequenceFromLine = 4;
         private const int numberOfParameters = 5;
 
-        public static bool TryProcessInputs(ref Point fieldSize, ref List<Point> mines, ref Point exitCoordinate, ref KeyValuePair<char, Point> startCoordinate, ref List<char> gameSequence)
+        public InputFileProcessor(string textFile = null)
+        {
+            if(textFile != null)
+            {
+                this.textFile = textFile;
+            }
+        }
+
+        public bool TryProcessInputs(ref Point fieldSize, ref List<Point> mines, ref Point exitCoordinate, ref KeyValuePair<char, Point> startCoordinate, ref List<char> gameSequence)
         {
             var lines = new List<string>();
             ReadFile(ref lines);
-            if(lines.Count < numberOfParameters) { return false; }
+            if(lines.Count < numberOfParameters) { ErrorLog.AddErrorMessage("Input file is empty"); return false; }
 
-            if (!TryProcessFieldSize(in lines, out fieldSize)) { return false; }
-            if(!TryProcessMineCoordinates(in lines, out mines)) { return false; }
-            if(!TryProcessExitCoordinate(in lines, out exitCoordinate)) { return false; }
-            if(!TryProcessStartCoordinate(in lines, out startCoordinate)) { return false; }
-            if(!TryProcessGameSequence(in lines, out gameSequence)) { return false; }
+            if (!TryProcessFieldSize(in lines, out fieldSize)) { ErrorLog.AddErrorMessage("Field size parameter is wrong"); return false; }
+            if(!TryProcessMineCoordinates(in lines, out mines)) { ErrorLog.AddErrorMessage("Mines parameter are wrong"); return false; }
+            if(!TryProcessExitCoordinate(in lines, out exitCoordinate)) { ErrorLog.AddErrorMessage("Exit coordinate parameter is wrong"); return false; }
+            if(!TryProcessStartCoordinate(in lines, out startCoordinate)) { ErrorLog.AddErrorMessage("Start coordinate parameter is wrong"); return false; }
+            if(!TryProcessGameSequence(in lines, out gameSequence)) { ErrorLog.AddErrorMessage("Game sequence parameter is wrong"); return false; }
 
             return true;
         }
 
-        private static bool TryProcessFieldSize(in List<string> lines, out Point fieldSize) 
+        private bool TryProcessFieldSize(in List<string> lines, out Point fieldSize) 
         {
             var line = lines[fieldSizeLinePosition];
             var coordinatesAsStringArray = line.Split(" ");
@@ -47,7 +55,7 @@ namespace turtle
             return true;
         }
 
-        private static bool TryProcessMineCoordinates(in List<string> lines, out List<Point> mines)
+        private bool TryProcessMineCoordinates(in List<string> lines, out List<Point> mines)
         {
             mines = new List<Point>();
             var line = lines[mineCoordinatesLinePosition];
@@ -68,7 +76,7 @@ namespace turtle
             return true;
         }
 
-        private static bool TryProcessExitCoordinate(in List<string> lines, out Point exitCoordinate)
+        private bool TryProcessExitCoordinate(in List<string> lines, out Point exitCoordinate)
         {
             var line = lines[exitCoordinatesLinePosition];
             var coordinatesAsStringArray = line.Split(" ");
@@ -83,7 +91,7 @@ namespace turtle
             return true;
         }
 
-        private static bool TryProcessStartCoordinate(in List<string> lines, out KeyValuePair<char, Point> startCoordinate)
+        private bool TryProcessStartCoordinate(in List<string> lines, out KeyValuePair<char, Point> startCoordinate)
         {
             startCoordinate = new KeyValuePair<char, Point>();
             var line = lines[startCoordinateLinePosition];
@@ -101,8 +109,8 @@ namespace turtle
             return true;
         }
 
-        private static bool TryProcessGameSequence(in List<string> lines, out List<char> gameSequence)
-        {
+        private bool TryProcessGameSequence(in List<string> lines, out List<char> gameSequence)
+        {            
             gameSequence = new List<char>();
             var sb = new StringBuilder();
             for(int i = gameSequenceFromLine + 1; i < lines.Count + 1; i++)
@@ -122,7 +130,7 @@ namespace turtle
             return true;
         }
 
-        private static void ReadFile(ref List<string> lines)
+        private void ReadFile(ref List<string> lines)
         {
             if (File.Exists(textFile))
             {

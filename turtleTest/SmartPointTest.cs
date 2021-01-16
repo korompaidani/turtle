@@ -1,11 +1,15 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 
 namespace turtleTest
 {
-    [TestClass]
     class SmartPointTest
     {
-        [TestMethod]
+        [SetUp]
+        public void Setup()
+        {
+        }
+
+        [Test]
         public void TestMethod1()
         {
         }

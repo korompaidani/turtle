@@ -14,18 +14,24 @@ namespace turtle
             KeyValuePair<char, Point> startCoordinate = new KeyValuePair<char, Point>();
             List<char> gameSequence = new List<char>();
 
-            InputFileProcessor.TryProcessInputs(ref fieldSize, ref mines, ref exitCoordinate, ref startCoordinate, ref gameSequence);
-            var sequence = new List<char> { 'M', 'M', 'M', 'M', 'M' };
+            var inputFileProcessor = new InputFileProcessor();
 
-            var game = new Game(fieldSize, mines, exitCoordinate, startCoordinate, gameSequence);
-                       
-            game.Play();
-            game.PrintResult();
+            if (inputFileProcessor.TryProcessInputs(ref fieldSize, ref mines, ref exitCoordinate, ref startCoordinate, ref gameSequence))
+            {
+                var game = new Game(fieldSize, mines, exitCoordinate, startCoordinate, gameSequence);
+
+                game.Play();
+                game.PrintResult();
 
 #if DEBUG
-            game.PrintPositions();
-            game.PrintRoute();
+                game.PrintPositions();
+                game.PrintRoute();
 #endif
+            }
+            else
+            {
+                ErrorLog.WriteErrorMessagesToConsole();
+            }
         }
     }
 }
