@@ -8,15 +8,16 @@ namespace turtle
     {
         static void Main(string[] args)
         {
-            InputFileReader.ReadFile();
-            var sequence = new List<char> { 'M', 'M', 'R', 'M', 'M', 'R', 'M', 'L', 'M', 'M', 'S', 'M', 'M', 'E', 'M' };
+            InputFileProcessor.ReadFile();
+            var sequence = new List<char> { 'M', 'M', 'M', 'M', 'M' };
 
-            var game = new Game(new Point(10, 10), new Point(3, 3), new Point(4, 6), new List<Point> { new Point(5, 3), new Point(4, 3) }, sequence);
+            var game = new Game(new Point(5, 5), new List<Point> {  }, new Point(4, 6), new KeyValuePair<char, Point>('E', new Point(3, 3)), sequence);
                        
             game.Play();
-            game.PrintPositions();
+            game.PrintResult();
 
 #if DEBUG
+            game.PrintPositions();
             game.PrintRoute();
 #endif
         }

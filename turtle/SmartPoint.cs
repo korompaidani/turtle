@@ -43,11 +43,18 @@ namespace turtle
         public static bool operator ==(SmartPoint sp1, SmartPoint sp2)
         {
             return sp1.X == sp2.X && sp1.Y == sp2.Y;
-        }
+        }            
 
         public static bool operator !=(SmartPoint sp1, SmartPoint sp2)
         {
             return !(sp1==sp2);
+        }
+
+        public bool IsPointInRange(SmartPoint rangeEndCoordinates)
+        {
+            var rangeStartCoordinates = 0;
+            return X <= rangeEndCoordinates.X && Y <= rangeEndCoordinates.Y
+                && X >= rangeStartCoordinates && Y >= rangeStartCoordinates;
         }
 
         public SmartPoint Move()

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace turtle
 {
-    static class InputFileReader
+    static class InputFileProcessor
     {
         private const string textFile = @".\..\..\..\Input\input.txt";
 

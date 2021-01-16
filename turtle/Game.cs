@@ -9,24 +9,26 @@ namespace turtle
     {
         private readonly IList<SmartPoint> minePositions = new List<SmartPoint>();
         private IList<SmartPoint> turtlePositions = new List<SmartPoint>();
+        private SmartPoint fieldSize;
         private SmartPoint exitPoint;
         IList<char> gameSequence;
         string gameResult;
 
-        private Point fieldSize = new Point(10, 10);
-
-        public Game(Point fieldSize, Point turtleInitialPosition, Point exitPosition, IList<Point> minePositions, IList<char> gameSequence)
+        public Game(Point fieldSize, IList<Point> minePositions, Point exitPosition, KeyValuePair<char, Point> turtleInitialPosition, IList<char> gameSequence)
         {
             this.gameSequence = gameSequence ??
               throw new ArgumentNullException(nameof(gameSequence));
 
             var mines = minePositions ??
               throw new ArgumentNullException(nameof(gameSequence));
-            
+
+            this.fieldSize = new SmartPoint(fieldSize);
             this.minePositions = mines.Select(x => new SmartPoint(x)).ToList();
 
             exitPoint = new SmartPoint(exitPosition);
-            turtlePositions.Add(new SmartPoint(turtleInitialPosition));
+            var initialPosition = new SmartPoint(turtleInitialPosition.Value);
+            SetAbsoluteDirection(turtleInitialPosition.Key, ref initialPosition);
+            turtlePositions.Add(initialPosition);
         }
 
         public void Play()
@@ -38,10 +40,16 @@ namespace turtle
                     var result = DirectionHandler(step);
                     if(result == 1) { gameResult = "Success"; return; }
                     if(result == 2) { gameResult = "Mine Hit"; return; }
+                    if(result == 3) { gameResult = "Out of Range"; return; }
                 }
 
                 gameResult = "Still in Danger";
             }
+        }
+
+        public void PrintResult()
+        {
+            Console.WriteLine(gameResult);
         }
 
         public void PrintPositions()
@@ -49,8 +57,7 @@ namespace turtle
             foreach(var position in turtlePositions)
             {
                 Console.WriteLine($"({position.X}, {position.Y})");
-            }
-            Console.WriteLine(gameResult);
+            }            
         }
 
         public void PrintRoute()
@@ -62,17 +69,21 @@ namespace turtle
                 {
                     if (x == 0)
                     {
-                        Console.Write(y);
+                        string forNumLength = y.ToString();
+                        if(forNumLength.Length == 1) { Console.Write($" {y} "); }
+                        if (forNumLength.Length == 2) { Console.Write($" {y}"); }
+                        if (forNumLength.Length == 3) { Console.Write($"{y}"); }
+
                     }
                     else
                     {
                         if (turtlePositions.Any(p => (p.X == x && p.Y == y)))
                         {
-                            Console.Write("T");
+                            Console.Write(" T ");
                         }
                         else
                         {
-                            Console.Write(" ");
+                            Console.Write("   ");
                         }
                     }
                     
@@ -88,24 +99,35 @@ namespace turtle
         private byte DirectionHandler(char dirCommand)
         {
             var formerLast = turtlePositions[turtlePositions.Count - 1];
+            SetAbsoluteDirection(dirCommand, ref formerLast);
+            SetRelativeDirection(dirCommand, ref formerLast);
 
-            if (dirCommand == 'N') { formerLast.SetNord(); }
-            else if (dirCommand == 'S') { formerLast.SetSouth(); }
-            else if (dirCommand == 'W') { formerLast.SetWest(); }
-            else if (dirCommand == 'E') { formerLast.SetEast(); }
-            else if (dirCommand == 'R') { formerLast.ClockWise(); }
-            else if (dirCommand == 'L') { formerLast.CounterClockWise(); }
-            else if (dirCommand == 'M')
+            if (dirCommand == 'M')
             {
                 var step = formerLast.Move();
 
                 if (exitPoint == step) { return 1; }
                 if (minePositions.Any(x => x == step)) { return 2; }
+                if (!step.IsPointInRange(fieldSize)) { return 3; }
 
-                turtlePositions.Add(step); 
+                turtlePositions.Add(step);
             }
 
             return 0;
+        }
+
+        private void SetAbsoluteDirection(char dirCommand, ref SmartPoint formerStep)
+        {
+            if (dirCommand == 'N') { formerStep.SetNord(); }
+            else if (dirCommand == 'S') { formerStep.SetSouth(); }
+            else if (dirCommand == 'W') { formerStep.SetWest(); }
+            else if (dirCommand == 'E') { formerStep.SetEast(); }
+        }
+
+        private void SetRelativeDirection(char dirCommand, ref SmartPoint formerStep)
+        {
+            if (dirCommand == 'R') { formerStep.ClockWise(); }
+            else if (dirCommand == 'L') { formerStep.CounterClockWise(); }
         }
     }
 }
