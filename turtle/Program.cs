@@ -10,7 +10,7 @@ namespace turtle
         {
             var inputFileProcessor = new InputFileProcessor();
             var gameContext = new GameContext(inputFileProcessor);
-            gameContext.PlayAGame();
+            gameContext.PlayAGame(false);
         }
     }
 }

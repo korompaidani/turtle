@@ -11,10 +11,17 @@ namespace turtle
         private IList<SmartPoint> turtlePositions = new List<SmartPoint>();
         private SmartPoint fieldSize;
         private SmartPoint exitPoint;
-        IList<char> gameSequence;
-        string gameResult;
+        private IList<char> gameSequence;
+        private string gameResult;
+        private bool isSafeModeActive;
 
-        public Game(Point fieldSize, IList<Point> minePositions, Point exitPosition, KeyValuePair<char, Point> turtleInitialPosition, IList<char> gameSequence)
+        /// <param name="fieldSize">Size of filed. This value is a 0 based range, not a coordinate</param>
+        /// <param name="minePositions">This is a collection of mine coordinates</param>
+        /// <param name="exitPosition">This is the exit coordinate position</param>
+        /// <param name="turtleInitialPosition">This is the initial coordinate of the Turtle</param>
+        /// <param name="gameSequence">This collection contains the moving and direction commands</param>
+        /// <param name="safeMode">Safe mode is an option which results increased calculation time but checks that given (input.txt) coordinate data is in range</param>
+        public Game(Point fieldSize, IList<Point> minePositions, Point exitPosition, KeyValuePair<char, Point> turtleInitialPosition, IList<char> gameSequence, bool safeMode = false)
         {
             this.gameSequence = gameSequence ??
               throw new ArgumentNullException(nameof(gameSequence));
@@ -29,22 +36,27 @@ namespace turtle
             var initialPosition = new SmartPoint(turtleInitialPosition.Value);
             SetAbsoluteDirection(turtleInitialPosition.Key, ref initialPosition);
             turtlePositions.Add(initialPosition);
-        }
 
-        public void Play()
+            isSafeModeActive = safeMode;
+        }        
+
+        public bool Play()
         {
-            if(gameSequence.Count > 0)
+            if (!CheckInitialParametersAreInRange()) { return false; }
+            if (gameSequence.Count > 0)
             {
                 foreach(var step in gameSequence)
                 {
                     var result = DirectionHandler(step);
-                    if(result == 1) { gameResult = "Success"; return; }
-                    if(result == 2) { gameResult = "Mine Hit"; return; }
-                    if(result == 3) { gameResult = "Out of Range"; return; }
+                    if(result == 1) { gameResult = "Success"; return true; }
+                    if(result == 2) { gameResult = "Mine Hit"; return true; }
+                    if(result == 3) { gameResult = "Out of Range"; return true; }
                 }
 
                 gameResult = "Still in Danger";
             }
+
+            return true;
         }
 
         public void PrintResult()
@@ -104,6 +116,18 @@ namespace turtle
             }
         }
 
+        public IList<Point> GetResultForTest(out string resultMessage)
+        {
+            var resultList = new List<Point>();
+            foreach (var pos in turtlePositions)
+            {
+                resultList.Add(new Point(pos.X, pos.Y));
+            }
+
+            resultMessage = gameResult;
+            return resultList;
+        }
+
         private byte DirectionHandler(char dirCommand)
         {
             var formerLast = turtlePositions[turtlePositions.Count - 1];
@@ -136,6 +160,33 @@ namespace turtle
         {
             if (dirCommand == 'R') { formerStep.ClockWise(); }
             else if (dirCommand == 'L') { formerStep.CounterClockWise(); }
+        }
+
+        private bool CheckInitialParametersAreInRange()
+        {
+            if (isSafeModeActive)
+            {
+                bool isStartPosValid = true;
+                bool isExitPointValid = true;
+                bool isMinePositionValid = true;
+
+                if (turtlePositions.Count > 0)
+                {
+                    if (!turtlePositions[0].IsPointInRange(fieldSize)) { isStartPosValid = false; ErrorLog.AddErrorMessage("Start Position is out of range"); }
+                }
+                if (!exitPoint.IsPointInRange(fieldSize)) { isExitPointValid = false; ErrorLog.AddErrorMessage("Exit coordinate is out of range"); }
+                if (minePositions.Count > 0)
+                {
+                    foreach (var pos in minePositions)
+                    {
+                        if (!pos.IsPointInRange(fieldSize)) { isMinePositionValid = false; ErrorLog.AddErrorMessage($"{pos} mine is out of range"); }
+                    }
+                }
+
+                return isStartPosValid && isExitPointValid && isMinePositionValid;
+            }
+
+            return true;
         }
     }
 }

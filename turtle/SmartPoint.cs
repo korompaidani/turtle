@@ -50,6 +50,8 @@ namespace turtle
             return !(sp1==sp2);
         }
 
+        //Get Hash should be implemented also
+
         public bool IsPointInRange(SmartPoint rangeEndCoordinates)
         {
             var rangeStartCoordinates = 0;

@@ -52,7 +52,7 @@ namespace turtleUnitTest
         public void PlayAGameTest()
         {
             var gameContext = new GameContext(inputProcessorMock.Object);
-            gameContext.PlayAGame();
+            gameContext.PlayAGame(false);
         }       
     }
 }

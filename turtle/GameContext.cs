@@ -22,24 +22,25 @@ namespace turtle
               throw new ArgumentNullException(nameof(inputFileProcessor));
         }
 
-        public void PlayAGame()
+        /// <param name="safeMode">Safe mode is an option which results increased calculation time but checks that given (input.txt) coordinate data is in range</param>
+        public void PlayAGame(bool safeMode)
         {
+            // Dependency injection needed here
             if (inputFileProcessor.TryProcessInputs(ref fieldSize, ref mines, ref exitCoordinate, ref startCoordinate, ref gameSequence))
             {
-                var game = new Game(fieldSize, mines, exitCoordinate, startCoordinate, gameSequence);
+                var game = new Game(fieldSize, mines, exitCoordinate, startCoordinate, gameSequence, safeMode);
 
-                game.Play();
-                game.PrintResult();
+                if (game.Play())
+                {
+                    game.PrintResult();
 
 #if DEBUG
-                game.PrintPositions();
-                game.PrintRoute();
+                    game.PrintPositions();
+                    game.PrintRoute();
 #endif
+                }
             }
-            else
-            {
-                ErrorLog.WriteErrorMessagesToConsole();
-            }
+            ErrorLog.WriteErrorMessagesToConsole();
         }
     }
 }

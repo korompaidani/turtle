@@ -18,17 +18,22 @@ namespace turtle
             messages.Add(message);
         }
 
-        public static void WriteErrorMessagesToConsole()
+        public static string WriteErrorMessagesToConsole()
         {
             if(messages.Count > 0)
             {
+                var sb = new StringBuilder();
                 foreach(var line in messages)
                 {
+                    sb.Append(line);
                     Console.WriteLine(line);
                 }
 
                 messages.Clear();
+                return sb.ToString();
             }
+
+            return String.Empty;
         }
     }
 }
