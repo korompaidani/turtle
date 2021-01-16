@@ -62,6 +62,14 @@ namespace turtle
 
         public void PrintRoute()
         {
+            string fieldSizeX = fieldSize.X.ToString();
+            string fieldSizeY = fieldSize.Y.ToString();
+
+            if(fieldSizeX.Length > 3 || fieldSizeY.Length > 3)
+            {
+                return;
+            }
+
             Console.WriteLine();
             for (int x = fieldSize.X; x > -1; x--)
             {

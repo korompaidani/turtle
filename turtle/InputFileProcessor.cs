@@ -7,7 +7,7 @@ using System.Text;
 
 namespace turtle
 {
-    public class InputFileProcessor
+    public class InputFileProcessor : IInputFileProcessor
     {
         private readonly string textFile = @".\..\..\..\Input\input.txt";
         private const int fieldSizeLinePosition = 0;
@@ -17,11 +17,11 @@ namespace turtle
         private const int gameSequenceFromLine = 4;
         private const int numberOfParameters = 5;
 
-        public InputFileProcessor(string textFile = null)
+        public InputFileProcessor(string textFilePath = null)
         {
-            if(textFile != null)
+            if(textFilePath != null)
             {
-                this.textFile = textFile;
+                this.textFile = textFilePath;
             }
         }
 
