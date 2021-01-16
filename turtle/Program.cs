@@ -8,10 +8,16 @@ namespace turtle
     {
         static void Main(string[] args)
         {
-            InputFileProcessor.ReadFile();
+            Point fieldSize = Point.Empty;
+            List<Point> mines = new List<Point>();
+            Point exitCoordinate = Point.Empty;
+            KeyValuePair<char, Point> startCoordinate = new KeyValuePair<char, Point>();
+            List<char> gameSequence = new List<char>();
+
+            InputFileProcessor.TryProcessInputs(ref fieldSize, ref mines, ref exitCoordinate, ref startCoordinate, ref gameSequence);
             var sequence = new List<char> { 'M', 'M', 'M', 'M', 'M' };
 
-            var game = new Game(new Point(5, 5), new List<Point> {  }, new Point(4, 6), new KeyValuePair<char, Point>('E', new Point(3, 3)), sequence);
+            var game = new Game(fieldSize, mines, exitCoordinate, startCoordinate, gameSequence);
                        
             game.Play();
             game.PrintResult();
