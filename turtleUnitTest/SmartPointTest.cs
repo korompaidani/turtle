@@ -23,7 +23,7 @@ namespace turtleUnitTest
         }
 
         [Test]
-        public void XYStateLess()
+        public void XYImmutability()
         {
             var list = new List<SmartPoint> { new SmartPoint(5, 9) };
 
