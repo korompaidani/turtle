@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using System.Text;
 
 namespace turtle
 {
-    public class SmartPoint
+    public class SmartPoint : IEquatable<SmartPoint>
     {
-        private const int moveStep = 1;
-
         private Point dir;
         private Point moveAxis;
 
         private int x;
         private int y;
 
-        public int X { get{return x;} set { x = value; } }
-        public int Y { get { return y; } set { y = value; } }
+        public int X { get{ return x;} }
+        public int Y { get{ return y;} }
 
         public SmartPoint(int x, int y)
         {
@@ -42,6 +39,10 @@ namespace turtle
 
         public static bool operator ==(SmartPoint sp1, SmartPoint sp2)
         {
+            if (sp2 is null)
+            {
+                return sp1 is null;
+            }
             return sp1.X == sp2.X && sp1.Y == sp2.Y;
         }            
 
@@ -50,7 +51,35 @@ namespace turtle
             return !(sp1==sp2);
         }
 
-        //Get Hash should be implemented also
+        public override int GetHashCode()
+        {
+            return x * 13 ^ y;
+        }
+
+        public bool Equals([AllowNull]SmartPoint other)
+        {
+            if (other == null)
+            {
+                return false;
+            }
+
+            return (this.x == other.x)
+                && (this.y == other.y);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+            if (!(obj is SmartPoint))
+            {
+                return false;
+            }
+            return (this.x == ((SmartPoint)obj).x)
+                && (this.y == ((SmartPoint)obj).y);
+        }
 
         public bool IsPointInRange(SmartPoint rangeEndCoordinates)
         {
@@ -73,7 +102,7 @@ namespace turtle
         }
 
         /// <summary>
-        /// 90 degrees to clockwise repl. (x,y)  with (y,−x)
+        /// 90 degrees to clockwise repl. (x,y)  with (y,−x) it's not magic number just math :).
         /// </summary>
         public void CounterClockWise()
         {            
@@ -85,7 +114,7 @@ namespace turtle
         }
 
         /// <summary>
-        /// 90 degrees to counter clockwise repl. (x,y)  with (−y,x).
+        /// 90 degrees to counter clockwise repl. (x,y)  with (−y,x) it's not magic number just math :).
         /// </summary>
         public void ClockWise()
         {

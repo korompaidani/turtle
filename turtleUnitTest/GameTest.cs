@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using turtle;
 
 namespace turtleUnitTest
@@ -15,16 +14,6 @@ namespace turtleUnitTest
         private Point exitCoordinate = new Point(4, 0);
         private KeyValuePair<char, Point> startCoordinate = new KeyValuePair<char, Point>('N', new Point(0, 0));
         private List<char> gameSequence = new List<char> { 'M' };
-
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-        }
         
         [Test]
         [TestCase("Still in Danger", 6, Direction.Vertical, 'M', 'M', 'M', 'M', 'M', Description = "TestStillInDangerScenarios Vertical Still In Range")]

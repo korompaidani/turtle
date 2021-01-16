@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-
-namespace turtle
+﻿namespace turtle
 {
     class Program
     {

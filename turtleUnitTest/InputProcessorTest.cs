@@ -28,12 +28,6 @@ namespace turtleUnitTest
                 "R M M M"
             };
 
-            [SetUp]
-            public void Setup()
-            {
-
-            }
-
             [TearDown]
             public void TearDown()
             {
